@@ -1,3 +1,12 @@
+"""
+Groupe Numero 4
+les participants sont :
+
+1. MUMBERE KAZIMOTO JOSUE 4630
+2. KASEREKA KAVUGHE SAMY 4614
+3. VIHUNDIRA ASIFIWE 4628
+4. KATSUVA ELIAS 4617
+"""
 table_matiere = {
     "Chapitre 1": {
         "Section 1.1": {},
@@ -29,15 +38,67 @@ def ajouter_element(arbre, cible, nouveau):
     for titre, enfants in arbre.items():
         if titre == cible:
             enfants[nouveau] = {}
-            return True  # insertion réussie
-
-        # sinon on continue à chercher dans les sous-niveaux
+            print(f"'{nouveau}' ajouté sous '{cible}'.")
+            return True
+        
         if ajouter_element(enfants, cible, nouveau):
             return True
 
-    return False  # cible non trouvée
+    return False
 
+def rechercher(arbre, cible, chemin=""):
+    for titre, enfants in arbre.items():
+        if titre == cible:
+            return chemin + "/" + titre
 
-afficher_preordre(table_matiere)
-nombre = compter_noeuds(table_matiere)
-print(f"\nNombre total de sections et sous-sections : {nombre}")
+        resultat = rechercher(enfants, cible, chemin + "/" + titre)
+        if resultat:
+            return resultat
+
+    return None
+
+# creation du menu interactif pour l'utilisateur
+def menu():
+    while True:
+        print("\n======================")
+        print("  MENU TABLE DES MATIÈRES")
+        print("======================")
+        print("1. Afficher la table des matières")
+        print("2. Ajouter un élément")
+        print("3. Compter les éléments")
+        print("4. Rechercher un élément")
+        print("5. Quitter")
+
+        choix = input("\nVotre choix : ")
+
+        match choix:
+            case "1":
+                print("\n--- AFFICHAGE DE LA TABLE ---")
+                afficher_preordre(table_matiere)
+
+            case "2":
+                cible = input("Ajouter dans quel chapitre/section ? ")
+                nouveau = input("Nom de la nouvelle section : ")
+                if not ajouter_element(table_matiere, cible, nouveau):
+                    print("Élément cible introuvable.")
+
+            case "3":
+                total = compter_noeuds(table_matiere)
+                print(f"Nombre total d'éléments : {total}")
+
+            case "4":
+                cible = input("Nom de l’élément à rechercher : ")
+                resultat = rechercher(table_matiere, cible)
+                if resultat:
+                    print("Trouvé :", resultat)
+                else:
+                    print("Élément non trouvé.")
+
+            case "5":
+                print("Au revoir !")
+                break
+
+            case _:
+                print("Choix invalide, réessayez.")
+
+menu()
